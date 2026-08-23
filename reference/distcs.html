@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Distant CS | No Fear, No Favor Computational Theory</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #1b1a19;
+      --red: #cb4035;
+      --faded: #6f6b64;
+      --code-bg: #141312;
+      --code-fg: #f4f1ea;
+      --border: 2px solid #1b1a19;
+      --border-light: 1px solid rgba(27, 26, 25, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.55;
+    }
+
+    .wrapper {
+      max-width: 1240px;
+      margin: 0 auto;
+      border-left: var(--border);
+      border-right: var(--border);
+      background: var(--bg);
+      min-height: 100vh;
+    }
+
+    /* Top Strip */
+    .top-strip {
+      border-bottom: var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 16px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--ink);
+      color: var(--bg);
+      letter-spacing: 0.05em;
+    }
+
+    /* Masthead */
+    header {
+      padding: 30px 24px 20px 24px;
+      border-bottom: var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .logo-distant {
+      color: var(--ink);
+      margin-right: 0.12em;
+    }
+
+    .logo-cs {
+      background: var(--red);
+      color: var(--bg);
+      padding: 0.06em 0.12em;
+    }
+
+    .masthead-meta {
+      font-family: monospace;
+      font-size: 0.85rem;
+      text-align: right;
+      color: var(--ink);
+      line-height: 1.4;
+    }
+
+    /* Navigation Bar */
+    nav {
+      border-bottom: var(--border);
+      background: var(--ink);
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      color: var(--bg);
+      text-decoration: none;
+      padding: 12px 22px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-right: 1px solid rgba(244, 241, 234, 0.2);
+      transition: background 0.15s ease;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--red);
+    }
+
+    /* Editorial Banner */
+    .banner {
+      padding: 12px 24px;
+      background: rgba(203, 64, 53, 0.08);
+      border-bottom: var(--border);
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-live {
+      background: var(--red);
+      color: #fff;
+      font-family: monospace;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Main Grid */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 2.8fr 1.2fr;
+    }
+
+    /* Main Content Area */
+    main {
+      padding: 36px 32px;
+      border-right: var(--border);
+    }
+
+    .category-tag {
+      display: inline-block;
+      background: var(--ink);
+      color: var(--bg);
+      font-family: monospace;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1.hero-title {
+      font-size: clamp(2rem, 3.8vw, 3.2rem);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+
+    .article-meta {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--faded);
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: var(--border-light);
+    }
+
+    .article-meta span {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    p.lead {
+      font-size: 1.25rem;
+      line-height: 1.45;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: var(--ink);
+    }
+
+    .pullquote {
+      margin: 32px 0;
+      padding: 20px 24px;
+      background: #ede9df;
+      border-left: 6px solid var(--red);
+      font-size: 1.25rem;
+      font-weight: 700;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    /* Code and Terminal Snippets */
+    .terminal-box {
+      background: var(--code-bg);
+      color: var(--code-fg);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.85rem;
+      padding: 20px;
+      border: var(--border);
+      margin: 24px 0;
+      overflow-x: auto;
+      box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+    }
+
+    .terminal-header {
+      color: var(--red);
+      font-weight: bold;
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      padding-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    /* Benchmark Table */
+    table.benchmark-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+
+    table.benchmark-table th, table.benchmark-table td {
+      border: var(--border);
+      padding: 10px 14px;
+      text-align: left;
+    }
+
+    table.benchmark-table th {
+      background: var(--ink);
+      color: var(--bg);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    table.benchmark-table tr:nth-child(even) {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* Sidebar */
+    aside {
+      padding: 36px 24px;
+      background: #eeea6;
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .widget {
+      margin-bottom: 40px;
+    }
+
+    .widget-heading {
+      font-size: 0.9rem;
+      font-family: monospace;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: var(--border);
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .paper-item {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: var(--border-light);
+    }
+
+    .paper-item a {
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 1.05rem;
+      line-height: 1.25;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .paper-item a:hover {
+      color: var(--red);
+    }
+
+    .paper-meta {
+      font-family: monospace;
+      font-size: 0.78rem;
+      color: var(--faded);
+    }
+
+    /* Live Telemetry Card */
+    .telemetry-card {
+      background: var(--ink);
+      color: #70d68a;
+      font-family: monospace;
+      padding: 16px;
+      font-size: 0.8rem;
+      border: var(--border);
+      line-height: 1.6;
+    }
+
+    .telemetry-card .red-alert {
+      color: #ff6b6b;
+    }
+
+    /* Footer */
+    footer {
+      border-top: var(--border);
+      background: var(--ink);
+      color: var(--bg);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-family: monospace;
+    }
+
+    @media (max-width: 900px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+      main {
+        border-right: none;
+        border-bottom: var(--border);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <!-- Status Ticker -->
+    <div class="top-strip">
+      <span>DISTANT CS PUBLICATION NODE // EST. 1978</span>
+      <span>SYSTEM STATUS: UNCOMPROMISED // PEER REVIEW: ACTIVE</span>
+    </div>
+
+    <!-- Header / Branding -->
+    <header>
+      <a href="#" class="logo-container">
+        <span class="logo-distant">Distant</span>
+        <span class="logo-cs">CS</span>
+      </a>
+      <div class="masthead-meta">
+        EDITORIAL MOTTO: NO FEAR. NO FAVOR.<br>
+        RESOURCE-AGNOSTIC COMPUTATIONAL THEORY
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+      <a href="#" class="active">Dissections</a>
+      <a href="#">First Principles</a>
+      <a href="#">Formal Papers</a>
+      <a href="#">Benchmarks</a>
+      <a href="#">System Audits</a>
+      <a href="#">Manifesto</a>
+    </nav>
+
+    <!-- Top Alert Banner -->
+    <div class="banner">
+      <span class="badge-live">LATEST AUDIT</span>
+      <span>Benchmark suite v4.2 published: Evaluating real-world JSON serialization costs across 14 runtime environments.</span>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="layout-grid">
+      
+      <!-- Main Column: Featured Article -->
+      <main>
+        <div class="category-tag">SYSTEM DISSECTION // CASE STUDY #104</div>
+        <h1 class="hero-title">Your Microservices Architecture is Just Bad OOP at Scale</h1>
+        <div class="article-meta">
+          AUTHOR: <span>DR. ALAN VECTOR</span> // TOPIC: <span>DISTRIBUTED SYSTEMS</span> // READ TIME: <span>9 MIN</span>
+        </div>
+
+        <p class="lead">
+          By trading in-memory function invocations for uncompressed HTTP REST hops across fifteen internal services, modern engineering teams have managed to reinvent object encapsulation while simultaneously adding 600ms of tail latency.
+        </p>
+
+        <p>
+          We took an audit of a standard e-commerce transaction pipeline operating across 18 distinct microservices. The claim was "independent scalability." The empirical reality was an interconnected graph of synchronous blocking calls prone to cascading failure modes and astronomical network serialization overhead.
+        </p>
+
+        <div class="pullquote">
+          "An algorithm is a strategy to reach a goal under constraints. Distributing state across 20 network boundaries when your data fits in single-socket L3 cache is not engineering—it is negligence."
+        </div>
+
+        <!-- Latency Audit Table -->
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Architecture Model</th>
+              <th>p50 Latency</th>
+              <th>p99 Latency</th>
+              <th>Total Mem Alloc</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Unified In-Memory State Machine</strong></td>
+              <td>0.42 ms</td>
+              <td>1.18 ms</td>
+              <td>128 MB</td>
+            </tr>
+            <tr>
+              <td><strong>Isolated Domain Modules (Monolith)</strong></td>
+              <td>1.15 ms</td>
+              <td>3.40 ms</td>
+              <td>210 MB</td>
+            </tr>
+            <tr>
+              <td><strong>18-Node HTTP/JSON Microservices</strong></td>
+              <td>148.00 ms</td>
+              <td>840.20 ms</td>
+              <td>14.2 GB</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Terminal Diagnostic Dump -->
+        <div class="terminal-box">
+          <div class="terminal-header">> FLAME_GRAPH_AUDIT: CHECKOUT_TRACE_P99</div>
+          [0.00ms] HTTP POST /checkout/commit<br>
+          &nbsp;&nbsp;├── [42.10ms] JSON_SERIALIZE (OrderPayload, 4.2KB)<br>
+          &nbsp;&nbsp;├── [98.40ms] TLS_HANDSHAKE + DNS (Auth-Service.internal)<br>
+          &nbsp;&nbsp;├── [120.30ms] DB_POOL_ACQUIRE_TIMEOUT (Lock contention on user_token)<br>
+          &nbsp;&nbsp;└── <span style="color:#ff6b6b;">[579.40ms] CASCADING_RETRY_STORM: Payment-Gateway Node 4 failed</span>
+        </div>
+
+        <p>
+          In next week's issue, we break down the assembly generated by popular ORM frameworks and explain why your database queries are generating four orders of magnitude more pointer allocations than necessary.
+        </p>
+      </main>
+
+      <!-- Sidebar -->
+      <aside>
+        <!-- Formal Papers Widget -->
+        <div class="widget">
+          <div class="widget-heading">
+            <span>PEER-REVIEWED PAPERS</span>
+            <span>VOL. 78</span>
+          </div>
+
+          <div class="paper-item">
+            <a href="#">Aether-Net: Deterministic Consensus in Asymmetric Latency Topologies</a>
+            <div class="paper-meta">DOI: 10.1978/DCS.00841 // PDF [14 PAGES]</div>
+          </div>
+
+          <div class="paper-item">
+            <a href="#">Evaluating Cache Locality vs Big O Complexity in Modern Silicon</a>
+            <div class="paper-meta">DOI: 10.1978/DCS.00839 // PDF [22 PAGES]</div>
+          </div>
+
+          <div class="paper-item">
+            <a href="#">Zero-Overhead Memory Compaction for Remote Terminals</a>
+            <div class="paper-meta">DOI: 10.1978/DCS.00834 // PDF [18 PAGES]</div>
+          </div>
+        </div>
+
+        <!-- Telemetry Widget -->
+        <div class="widget">
+          <div class="widget-heading">
+            <span>NETWORK AUDIT RUNTIME</span>
+            <span>[LIVE]</span>
+          </div>
+          <div class="telemetry-card">
+            > NODE: Nimbus-1 Cluster 01<br>
+            > RUNTIME: Native Aether-Link<br>
+            > ALLOCATED MEM: 2.14 MB / UNBOUND<br>
+            > CPU EFFICIENCY: 99.4%<br>
+            > INVOCATION OVERHEAD: 0.0002ms<br>
+            <span class="red-alert">> STATUS: NO REDUNDANT HOPS</span>
+          </div>
+        </div>
+
+        <!-- Submission Box -->
+        <div class="widget">
+          <div class="widget-heading">
+            <span>CONTRIBUTIONS</span>
+          </div>
+          <p style="font-size: 0.88rem; margin-bottom: 12px;">
+            We accept unsolicited technical dissections and proofs. Submissions must include reproducible benchmark harnesses. Marketing copy will be rejected without reply.
+          </p>
+          <a href="#" style="font-weight: 800; color: var(--red); font-size: 0.85rem; font-family: monospace; text-transform: uppercase;">
+            Submit Paper Specs &rarr;
+          </a>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <span>&copy; DISTANT CS PUBLICATIONS. UNCOMPROMISING SYSTEMS ARCHITECTURE.</span>
+      <span>ALL PROOFS REPRODUCIBLE</span>
+    </footer>
+  </div>
+
+</body>
+</html>
