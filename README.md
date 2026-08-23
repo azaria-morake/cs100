@@ -2,35 +2,59 @@
 
 > **"No Fear. No Favor. Resource-Agnostic Computational Theory."**
 
-A technical publication and editorial web platform archetype inspired by Swiss academic journals, industrial engineering bulletins, and brutalist web aesthetics.
+A technical publication and editorial web platform built with **Next.js (App Router)**, **TypeScript**, and **Firebase (Cloud Firestore + Auth)**. Preserves the brutalist Swiss academic journal design with full server-side rendering for readers and an interactive editorial CMS for authoring.
 
 ---
 
 ## 📌 Table of Contents
 
 - [Overview](#overview)
-- [Design Architecture & Aesthetic](#design-architecture--aesthetic)
-- [Component Breakdown](#component-breakdown)
-- [Reference Assessment](#reference-assessment)
-  - [Strengths](#strengths)
-  - [Opportunities for Enhancement](#opportunities-for-enhancement)
-- [Repository Structure](#repository-structure)
+- [Architecture & Tech Stack](#architecture--tech-stack)
+- [Design Tokens & Aesthetic](#design-tokens--aesthetic)
+- [Routes & Navigation](#routes--navigation)
+- [Editorial CMS & Firebase Backend](#editorial-cms--firebase-backend)
 - [Getting Started](#getting-started)
-- [Next Steps & Git Setup](#next-steps--git-setup)
+- [Connecting Firebase](#connecting-firebase)
 
 ---
 
 ## 📖 Overview
 
-**Distant CS** represents an uncompromising computational theory publication archetype. Built with clean, dependency-free HTML and CSS, it delivers high-density technical information, latency audits, formal paper listings, and real-time telemetry diagnostics without front-end bloat.
+**Distant CS** pairs the lightweight, high-contrast, brutalist aesthetic of industrial engineering publications with a modern fullstack backend:
 
-The design emphasizes readability, rapid load times, deterministic structure, and high contrast.
+* **For Readers:** Pure, instant server-rendered HTML pages with sub-millisecond feel and perfect SEO.
+* **For Editors:** An interactive `/admin` editorial suite with real-time markdown preview, benchmark table builders, ASCII flame graph traces, and direct Firestore transmission.
+* **Zero Bloat Fallback:** Runs completely standalone with baked-in fallback seed data even when Firebase credentials are not yet configured.
 
 ---
 
-## 🎨 Design Architecture & Aesthetic
+## 🛠️ Tech Stack & Architecture
 
-The reference template incorporates an editorial-brutalist identity:
+* **Framework:** [Next.js 16 (App Router)](https://nextjs.org/) + React 19
+* **Language:** TypeScript 5
+* **Styling:** Custom Brutalist CSS Design Tokens + Tailwind CSS v4
+* **Backend:** [Firebase Cloud Firestore](https://firebase.google.com/docs/firestore) + [Firebase Authentication](https://firebase.google.com/docs/auth)
+
+```text
+               ┌────────────────────────────────────────────────────────┐
+               │                     Firebase                          │
+               │   • Firestore (Articles, Metadata, Benchmarks)         │
+               │   • Firebase Auth (Editorial access)                  │
+               └───────────────▲────────────────────────▲───────────────┘
+                               │                        │
+                    (Writes via Admin)          (Reads & SSR)
+                               │                        │
+               ┌───────────────┴────────┐      ┌────────┴───────────────┐
+               │   /admin Editorial CMS │      │    Public Publication  │
+               │  • Interactive Form    │      │  • Pre-rendered HTML   │
+               │  • Flame graph builder │      │  • /dissections/[slug] │
+               │  • Live preview tab    │      │  • Fast, responsive    │
+               └────────────────────────┘      └────────────────────────┘
+```
+
+---
+
+## 🎨 Design Tokens & Aesthetic
 
 | Token | Value | Purpose |
 | :--- | :--- | :--- |
@@ -42,87 +66,55 @@ The reference template incorporates an editorial-brutalist identity:
 | `--code-fg` | `#f4f1ea` | Terminal output text |
 | `--border` | `2px solid #1b1a19` | Structural boundary lines |
 
-### Key Stylistic Choices
-- **Monospace Metadata:** Timestamps, DOIs, read times, telemetry, and system statuses leverage monospace typography to reinforce an engineering-first demeanor.
-- **Strict Grid System:** Two-column split layout (`2.8fr` main dissection / `1.2fr` auxiliary sidebar) bounded by explicit borders.
-- **Technical Artifact Embeds:** Native styling for flame graph traces, latency benchmark tables, pullquotes, and status badges.
-
 ---
 
-## 🧱 Component Breakdown
+## 🗺️ Routes & Navigation
 
-1. **Status Ticker (`.top-strip`)**: Monospaced publication node status, establishment date, and peer review state.
-2. **Masthead (`header`)**: High-impact brand logo (`Distant` with red pill `CS`) and publication motto.
-3. **Navigation (`nav`)**: Dense, uppercase tabbed links for editorial verticals (*Dissections*, *First Principles*, *Formal Papers*, *Benchmarks*, *System Audits*, *Manifesto*).
-4. **Editorial Alert (`.banner`)**: Notice banner with live badge highlight.
-5. **Main Dissection Column (`main`)**:
-   - Categorical badge (`SYSTEM DISSECTION // CASE STUDY #104`)
-   - Large hero title (`clamp(2rem, 3.8vw, 3.2rem)`)
-   - Monospace article metadata bar
-   - Formatted lead paragraph and pullquote with left red accent border
-   - **Benchmark Comparison Table**: Comparative metrics (p50/p99 latency, memory footprint)
-   - **Terminal Diagnostic Dump (`.terminal-box`)**: Flame graph / stack trace snippet with custom syntax highlighting
-6. **Sidebar (`aside`)**:
-   - Peer-Reviewed Papers catalog with DOI and pagination metadata
-   - Live Network Audit Runtime telemetry card with CRT/terminal green font
-   - Technical paper submission callout
-7. **Footer (`footer`)**: Monospace copyright and reproducibility declaration.
-
----
-
-## 🔍 Reference Assessment
-
-### Strengths
-- **Zero External Dependencies:** 100% self-contained single-file HTML & CSS with zero external network requests or render-blocking scripts.
-- **Responsive Layout:** Clean CSS Grid and Flexbox foundation with a media query breakpoint at `900px` collapsing gracefully to single-column.
-- **Strong Typographic Hierarchy:** Excellent balance between system sans-serif headers/body and monospace data markers.
-- **Consistent Design Language:** Cohesive CSS variables driving color, borders, and spacing across all components.
-
-### Opportunities for Enhancement
-1. **Interactive Flame Graphs & Diagnostic Trees:** Add collapsible or expandable nodes to the terminal trace box.
-2. **Dynamic Paper Filter / Search:** Implement client-side tag filtering for formal papers and benchmarks.
-3. **Dark / High-Contrast Theme Modes:** Add CSS custom property overrides for dark mode preference (`prefers-color-scheme`).
-4. **Static Site Generator (SSG) / Markdown Pipeline:** Transition article content into Markdown / MDX files parsed into this layout template.
-5. **Accessibility (a11y):** Add explicit ARIA landmarks, roles, and contrast checks for terminal highlight colors.
-
----
-
-## 📁 Repository Structure
-
-```text
-cs100/
-├── README.md                 # Project documentation and assessment
-└── reference/
-    └── distcs.html           # Original Distant CS standalone reference template
-```
+* **`/`** — Masthead, active status ticker, alert banner, latest featured dissection, and live telemetry sidebar.
+* **`/dissections/[slug]`** — Dynamic single-article view with latency audit tables and flame graph diagnostics.
+* **`/papers`** — Peer-reviewed formal papers archive with DOIs.
+* **`/benchmarks`** — Latency and memory allocation benchmark suites.
+* **`/principles`** — First principles computational theory essays.
+* **`/audits`** — Production stack trace flame graph audits.
+* **`/manifesto`** — Publication manifesto.
+* **`/admin`** — Interactive editorial dispatch and live preview CMS.
 
 ---
 
 ## 🚀 Getting Started
 
-To view the reference template locally in your browser:
-
+### 1. Install Dependencies
 ```bash
-# Using Python's built-in HTTP server
-cd /home/rootz/ux-giants/cs100/reference
-python3 -m http.server 8080
+npm install
+```
 
-# Or open directly in your browser
-xdg-open /home/rootz/ux-giants/cs100/reference/distcs.html
+### 2. Run the Development Server
+```bash
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### 3. Build for Production
+```bash
+npm run build
+npm start
 ```
 
 ---
 
-## 🔗 Next Steps & Git Setup
+## 🔥 Connecting Firebase
 
-To initialize this workspace as a Git repository and push to GitHub over SSH:
-
-```bash
-cd /home/rootz/ux-giants/cs100
-git init
-git add .
-git commit -m "feat: initial commit with distcs reference template and assessment"
-git branch -M main
-git remote add origin git@github.com:<your-username>/<your-repo-name>.git
-git push -u origin main
-```
+1. Copy `.env.example` to `.env.local`:
+   ```bash
+   cp .env.example .env.local
+   ```
+2. Fill in your project keys from the [Firebase Console](https://console.firebase.google.com/):
+   ```env
+   NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSy...
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-app.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-app-id
+   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-app.appspot.com
+   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=123456789
+   NEXT_PUBLIC_FIREBASE_APP_ID=1:123456789:web:...
+   ```
+3. In Firestore, create an `articles` collection or use the `/admin` CMS page to publish articles directly.

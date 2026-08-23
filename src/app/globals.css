@@ -1,0 +1,356 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f4f1ea;
+  --ink: #1b1a19;
+  --red: #cb4035;
+  --faded: #6f6b64;
+  --code-bg: #141312;
+  --code-fg: #f4f1ea;
+  --border: 2px solid #1b1a19;
+  --border-light: 1px solid rgba(27, 26, 25, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+.wrapper {
+  max-width: 1240px;
+  margin: 0 auto;
+  border-left: var(--border);
+  border-right: var(--border);
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top Strip */
+.top-strip {
+  border-bottom: var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 16px;
+  font-family: monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--ink);
+  color: var(--bg);
+  letter-spacing: 0.05em;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Masthead */
+header.masthead {
+  padding: 30px 24px 20px 24px;
+  border-bottom: var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.logo-container {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.logo-distant {
+  color: var(--ink);
+  margin-right: 0.12em;
+}
+
+.logo-cs {
+  background: var(--red);
+  color: var(--bg);
+  padding: 0.06em 0.12em;
+}
+
+.masthead-meta {
+  font-family: monospace;
+  font-size: 0.85rem;
+  text-align: right;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* Navigation Bar */
+nav.publication-nav {
+  border-bottom: var(--border);
+  background: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+nav.publication-nav a {
+  color: var(--bg);
+  text-decoration: none;
+  padding: 12px 22px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(244, 241, 234, 0.2);
+  transition: background 0.15s ease;
+}
+
+nav.publication-nav a:hover,
+nav.publication-nav a.active {
+  background: var(--red);
+}
+
+/* Editorial Banner */
+.banner {
+  padding: 12px 24px;
+  background: rgba(203, 64, 53, 0.08);
+  border-bottom: var(--border);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.badge-live {
+  background: var(--red);
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Main Grid */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 2.8fr 1.2fr;
+  flex: 1;
+}
+
+/* Main Content Area */
+main.content-area {
+  padding: 36px 32px;
+  border-right: var(--border);
+}
+
+.category-tag {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+h1.hero-title {
+  font-size: clamp(2rem, 3.8vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.article-meta {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: var(--faded);
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: var(--border-light);
+}
+
+.article-meta span {
+  color: var(--red);
+  font-weight: 700;
+}
+
+p.lead {
+  font-size: 1.25rem;
+  line-height: 1.45;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: var(--ink);
+}
+
+.article-body-p {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: var(--ink);
+}
+
+.pullquote {
+  margin: 32px 0;
+  padding: 20px 24px;
+  background: #ede9df;
+  border-left: 6px solid var(--red);
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Code and Terminal Snippets */
+.terminal-box {
+  background: var(--code-bg);
+  color: var(--code-fg);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 0.85rem;
+  padding: 20px;
+  border: var(--border);
+  margin: 24px 0;
+  overflow-x: auto;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+}
+
+.terminal-header {
+  color: var(--red);
+  font-weight: bold;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}
+
+/* Benchmark Table */
+table.benchmark-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  font-size: 0.95rem;
+}
+
+table.benchmark-table th, 
+table.benchmark-table td {
+  border: var(--border);
+  padding: 10px 14px;
+  text-align: left;
+}
+
+table.benchmark-table th {
+  background: var(--ink);
+  color: var(--bg);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+table.benchmark-table tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+/* Sidebar */
+aside.sidebar-area {
+  padding: 36px 24px;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.widget {
+  margin-bottom: 40px;
+}
+
+.widget-heading {
+  font-size: 0.9rem;
+  font-family: monospace;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: var(--border);
+  padding-bottom: 6px;
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.paper-item {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: var(--border-light);
+}
+
+.paper-item a {
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.paper-item a:hover {
+  color: var(--red);
+}
+
+.paper-meta {
+  font-family: monospace;
+  font-size: 0.78rem;
+  color: var(--faded);
+}
+
+/* Live Telemetry Card */
+.telemetry-card {
+  background: var(--ink);
+  color: #70d68a;
+  font-family: monospace;
+  padding: 16px;
+  font-size: 0.8rem;
+  border: var(--border);
+  line-height: 1.6;
+}
+
+.telemetry-card .red-alert {
+  color: #ff6b6b;
+}
+
+/* Footer */
+footer.site-footer {
+  border-top: var(--border);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-family: monospace;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+  main.content-area {
+    border-right: none;
+    border-bottom: var(--border);
+  }
+}
