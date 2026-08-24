@@ -4,8 +4,8 @@ export default function Header() {
   return (
     <header className="masthead">
       <Link href="/" className="logo-container">
-        <span className="logo-distant">Distant</span>
-        <span className="logo-cs">CS</span>
+        <span className="logo-distant">CS</span>
+        <span className="logo-cs">100</span>
       </Link>
       <div className="masthead-meta">
         EDITORIAL MOTTO: NO FEAR. NO FAVOR.<br />

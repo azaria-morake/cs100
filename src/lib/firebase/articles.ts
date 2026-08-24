@@ -72,7 +72,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
 export async function saveArticle(article: Article): Promise<string> {
   if (!isFirebaseConfigured || !db) {
     throw new Error(
-      "Firebase is not configured yet. Please add your credentials in .env.local"
+      "Firebase is not configured yet. Please configure your credentials in .env.local"
     );
   }
 
@@ -80,9 +80,21 @@ export async function saveArticle(article: Article): Promise<string> {
   const docRef = doc(db, COLLECTION_NAME, docId);
 
   const dataToSave = {
-    ...article,
-    updatedAt: new Date().toISOString(),
+    slug: article.slug,
+    title: article.title,
+    category: article.category,
+    author: article.author,
+    topic: article.topic,
+    readTime: article.readTime,
+    lead: article.lead,
+    body: article.body || [],
+    pullquote: article.pullquote || '',
+    benchmarks: article.benchmarks || [],
+    flameGraphHeader: article.flameGraphHeader || '',
+    flameGraphLines: article.flameGraphLines || [],
     publishedAt: article.publishedAt || new Date().toISOString().split("T")[0],
+    updatedAt: new Date().toISOString(),
+    isFeatured: Boolean(article.isFeatured),
   };
 
   await setDoc(docRef, dataToSave, { merge: true });

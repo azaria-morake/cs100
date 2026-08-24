@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function: Check if caller is authenticated
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+
+    // Helper function: Validate article data schema
+    function isValidArticle(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() <= 300
+          && data.slug is string && data.slug.size() > 0 && data.slug.size() <= 150
+          && data.category is string && data.category.size() <= 100
+          && data.author is string && data.author.size() <= 100
+          && data.lead is string && data.lead.size() <= 3000
+          && data.publishedAt is string;
+    }
+
+    // Articles collection: Public read, Authenticated write with validation
+    match /articles/{articleId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && isValidArticle(request.resource.data);
+      allow update: if isAuthenticated() && isValidArticle(request.resource.data);
+      allow delete: if isAuthenticated();
+    }
+
+    // Default deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
