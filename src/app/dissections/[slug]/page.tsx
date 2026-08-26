@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getArticleBySlug } from '@/lib/firebase/articles';
+import { getPapers } from '@/lib/firebase/papers';
 import BenchmarkTable from '@/components/BenchmarkTable';
 import TerminalBox from '@/components/TerminalBox';
 import Sidebar from '@/components/Sidebar';
@@ -14,7 +15,10 @@ interface PageProps {
 
 export default async function DissectionPage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, papers] = await Promise.all([
+    getArticleBySlug(slug),
+    getPapers()
+  ]);
 
   if (!article) {
     notFound();
@@ -65,7 +69,7 @@ export default async function DissectionPage({ params }: PageProps) {
         )}
       </main>
 
-      <Sidebar />
+      <Sidebar papers={papers} />
     </div>
   );
 }

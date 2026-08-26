@@ -4,10 +4,11 @@ import TerminalBox from '@/components/TerminalBox';
 import Sidebar from '@/components/Sidebar';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { getArticles } from '@/lib/firebase/articles';
+import { getPapers } from '@/lib/firebase/papers';
 import Link from 'next/link';
 
 export default async function HomePage() {
-  const articles = await getArticles();
+  const [articles, papers] = await Promise.all([getArticles(), getPapers()]);
   const featured = articles[0];
 
   return (
@@ -77,7 +78,7 @@ export default async function HomePage() {
         </main>
 
         {/* Sidebar */}
-        <Sidebar />
+        <Sidebar papers={papers} />
       </div>
     </>
   );

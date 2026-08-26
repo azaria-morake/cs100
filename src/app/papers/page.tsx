@@ -155,7 +155,7 @@ export default function PapersPage() {
         </div>
         )}
       </main>
-      <Sidebar />
+      <Sidebar papers={papers} />
     </div>
   );
 }

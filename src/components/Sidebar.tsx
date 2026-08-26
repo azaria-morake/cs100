@@ -1,18 +1,17 @@
 import Link from 'next/link';
 import { Paper, TelemetryData } from '@/lib/types';
 import { defaultPapers, defaultTelemetry } from '@/lib/defaultData';
-import { getPapers } from '@/lib/firebase/papers';
 
 interface SidebarProps {
   papers?: Paper[];
   telemetry?: TelemetryData;
 }
 
-export default async function Sidebar({
-  papers,
+export default function Sidebar({
+  papers = defaultPapers,
   telemetry = defaultTelemetry,
 }: SidebarProps) {
-  const displayPapers = papers || (await getPapers());
+  const displayPapers = papers && papers.length > 0 ? papers : defaultPapers;
 
   return (
     <aside className="sidebar-area">
