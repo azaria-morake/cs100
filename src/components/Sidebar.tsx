@@ -1,16 +1,19 @@
 import Link from 'next/link';
 import { Paper, TelemetryData } from '@/lib/types';
 import { defaultPapers, defaultTelemetry } from '@/lib/defaultData';
+import { getPapers } from '@/lib/firebase/papers';
 
 interface SidebarProps {
   papers?: Paper[];
   telemetry?: TelemetryData;
 }
 
-export default function Sidebar({
-  papers = defaultPapers,
+export default async function Sidebar({
+  papers,
   telemetry = defaultTelemetry,
 }: SidebarProps) {
+  const displayPapers = papers || (await getPapers());
+
   return (
     <aside className="sidebar-area">
       {/* Formal Papers Widget */}
@@ -20,7 +23,7 @@ export default function Sidebar({
           <span>VOL. 78</span>
         </div>
 
-        {papers.map((paper) => (
+        {displayPapers.slice(0, 4).map((paper) => (
           <div key={paper.id} className="paper-item">
             <Link href={`/papers#${paper.id}`}>{paper.title}</Link>
             <div className="paper-meta">
@@ -28,6 +31,12 @@ export default function Sidebar({
             </div>
           </div>
         ))}
+
+        <div className="mt-3 text-right">
+          <Link href="/papers" className="font-mono text-xs text-[#cb4035] hover:underline font-bold uppercase">
+            View All Formal Papers ({displayPapers.length}) &rarr;
+          </Link>
+        </div>
       </div>
 
       {/* Telemetry Widget */}

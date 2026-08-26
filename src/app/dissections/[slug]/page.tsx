@@ -3,6 +3,7 @@ import { getArticleBySlug } from '@/lib/firebase/articles';
 import BenchmarkTable from '@/components/BenchmarkTable';
 import TerminalBox from '@/components/TerminalBox';
 import Sidebar from '@/components/Sidebar';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import Link from 'next/link';
 
 interface PageProps {
@@ -55,6 +56,12 @@ export default async function DissectionPage({ params }: PageProps) {
             header={article.flameGraphHeader} 
             lines={article.flameGraphLines} 
           />
+        )}
+
+        {article.markdownContent && (
+          <div className="mt-8 pt-6 border-t border-[#1b1a19]/20">
+            <MarkdownRenderer content={article.markdownContent} />
+          </div>
         )}
       </main>
 

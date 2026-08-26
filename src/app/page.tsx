@@ -2,6 +2,7 @@ import EditorialBanner from '@/components/EditorialBanner';
 import BenchmarkTable from '@/components/BenchmarkTable';
 import TerminalBox from '@/components/TerminalBox';
 import Sidebar from '@/components/Sidebar';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { getArticles } from '@/lib/firebase/articles';
 import Link from 'next/link';
 
@@ -45,6 +46,13 @@ export default async function HomePage() {
               header={featured.flameGraphHeader} 
               lines={featured.flameGraphLines} 
             />
+          )}
+
+          {/* Rich Markdown & Math Section */}
+          {featured.markdownContent && (
+            <div className="mt-8 pt-6 border-t border-[#1b1a19]/20">
+              <MarkdownRenderer content={featured.markdownContent} />
+            </div>
           )}
 
           {articles.length > 1 && (

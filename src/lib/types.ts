@@ -15,6 +15,7 @@ export interface Article {
   readTime: string;
   lead: string;
   body: string[];
+  markdownContent?: string;
   pullquote?: string;
   benchmarks?: BenchmarkRow[];
   flameGraphHeader?: string;
@@ -27,8 +28,13 @@ export interface Paper {
   id: string;
   title: string;
   doi: string;
+  authors?: string;
+  year?: number;
+  abstract?: string;
   pages: number;
-  url?: string;
+  pdfUrl?: string;
+  bibtex?: string;
+  category?: string;
 }
 
 export interface TelemetryData {
