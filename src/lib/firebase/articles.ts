@@ -2,7 +2,6 @@ import {
   collection, 
   getDocs, 
   doc, 
-  getDoc, 
   setDoc, 
   deleteDoc, 
   query, 
@@ -23,7 +22,7 @@ export async function getArticles(): Promise<Article[]> {
   try {
     const q = query(collection(db, COLLECTION_NAME), orderBy("publishedAt", "desc"));
     const snapshot = await getDocs(q);
-    
+
     if (snapshot.empty) {
       return [defaultFeaturedArticle];
     }
@@ -32,6 +31,7 @@ export async function getArticles(): Promise<Article[]> {
     snapshot.forEach((docSnap) => {
       articles.push({ id: docSnap.id, ...(docSnap.data() as Omit<Article, "id">) });
     });
+
     return articles;
   } catch (error) {
     console.warn("Firestore fetch error, using fallback data:", error);
@@ -88,6 +88,7 @@ export async function saveArticle(article: Article): Promise<string> {
     readTime: article.readTime,
     lead: article.lead,
     body: article.body || [],
+    markdownContent: article.markdownContent || '',
     pullquote: article.pullquote || '',
     benchmarks: article.benchmarks || [],
     flameGraphHeader: article.flameGraphHeader || '',
@@ -107,4 +108,10 @@ export async function deleteArticle(docId: string): Promise<void> {
   }
   const docRef = doc(db, COLLECTION_NAME, docId);
   await deleteDoc(docRef);
+}
+
+export async function seedDefaultArticleToFirestore(): Promise<void> {
+  if (!isFirebaseConfigured || !db) return;
+  const artRef = doc(db, COLLECTION_NAME, defaultFeaturedArticle.id || defaultFeaturedArticle.slug);
+  await setDoc(artRef, defaultFeaturedArticle);
 }

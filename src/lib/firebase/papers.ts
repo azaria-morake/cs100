@@ -23,13 +23,15 @@ export async function getPapers(): Promise<Paper[]> {
     const snapshot = await getDocs(q);
 
     if (snapshot.empty) {
-      return defaultPapers;
+      // If collection is completely empty in Firestore, return empty list (or fallback for unconfigured)
+      return [];
     }
 
     const papers: Paper[] = [];
     snapshot.forEach((docSnap) => {
       papers.push({ id: docSnap.id, ...(docSnap.data() as Omit<Paper, "id">) });
     });
+
     return papers;
   } catch (error) {
     console.warn("Firestore papers fetch error, using fallback data:", error);
@@ -61,4 +63,13 @@ export async function deletePaper(docId: string): Promise<void> {
   }
   const docRef = doc(db, COLLECTION_NAME, docId);
   await deleteDoc(docRef);
+}
+
+export async function seedDefaultPapersToFirestore(): Promise<number> {
+  if (!isFirebaseConfigured || !db) return 0;
+  for (const paper of defaultPapers) {
+    const pRef = doc(db, COLLECTION_NAME, paper.id);
+    await setDoc(pRef, paper);
+  }
+  return defaultPapers.length;
 }

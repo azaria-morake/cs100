@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Article, BenchmarkRow, Paper } from '@/lib/types';
 import { useAuth } from '@/lib/firebase/authContext';
-import { getArticles, saveArticle, deleteArticle } from '@/lib/firebase/articles';
-import { getPapers, savePaper, deletePaper } from '@/lib/firebase/papers';
+import { getArticles, saveArticle, deleteArticle, seedDefaultArticleToFirestore } from '@/lib/firebase/articles';
+import { getPapers, savePaper, deletePaper, seedDefaultPapersToFirestore } from '@/lib/firebase/papers';
 import BenchmarkTable from '@/components/BenchmarkTable';
 import TerminalBox from '@/components/TerminalBox';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
@@ -188,12 +188,14 @@ export default function AdminPage() {
     if (!confirm(`Delete editorial "${id}"?`)) return;
 
     try {
+      setArticlesList((prev) => prev.filter((a) => (a.id || a.slug) !== id));
       await deleteArticle(id);
-      setStatusMessage({ type: 'success', text: `Article ${id} deleted successfully.` });
+      setStatusMessage({ type: 'success', text: `Article ${id} deleted permanently.` });
       fetchAllData();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Delete failed';
       setStatusMessage({ type: 'error', text: msg });
+      fetchAllData();
     }
   };
 
@@ -263,12 +265,14 @@ export default function AdminPage() {
   const handleDeletePaper = async (id: string) => {
     if (!confirm(`Delete paper "${id}"?`)) return;
     try {
+      setPapersList((prev) => prev.filter((p) => p.id !== id));
       await deletePaper(id);
-      setStatusMessage({ type: 'success', text: `Paper ${id} deleted.` });
+      setStatusMessage({ type: 'success', text: `Paper "${id}" deleted permanently.` });
       fetchAllData();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Delete failed';
       setStatusMessage({ type: 'error', text: msg });
+      fetchAllData();
     }
   };
 
@@ -283,6 +287,34 @@ export default function AdminPage() {
   doi       = {${paperForm.doi || '10.1978/DCS.00000'}}
 }`;
     setPaperForm((prev) => ({ ...prev, bibtex: bib }));
+  };
+
+  const handleSeedPapers = async () => {
+    try {
+      setIsSubmitting(true);
+      await seedDefaultPapersToFirestore();
+      setStatusMessage({ type: 'success', text: 'Sample papers seeded into Cloud Firestore successfully!' });
+      fetchAllData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Seeding failed';
+      setStatusMessage({ type: 'error', text: msg });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSeedArticle = async () => {
+    try {
+      setIsSubmitting(true);
+      await seedDefaultArticleToFirestore();
+      setStatusMessage({ type: 'success', text: 'Sample dissection seeded into Cloud Firestore successfully!' });
+      fetchAllData();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Seeding failed';
+      setStatusMessage({ type: 'error', text: msg });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -489,13 +521,23 @@ export default function AdminPage() {
 
           {activeTab === 'list' && (
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center flex-wrap gap-2">
                 <h2 className="font-mono text-sm font-bold uppercase text-[#1b1a19]">
                   Published & Seeded Editorials
                 </h2>
-                <button onClick={handleNewArticle} className="px-3 py-1.5 bg-[#cb4035] text-white font-mono text-xs font-bold uppercase">
-                  + New Dissection
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSeedArticle}
+                    disabled={isSubmitting}
+                    className="px-3 py-1.5 border border-[#1b1a19] bg-white hover:bg-[#f4f1ea] font-mono text-xs font-bold uppercase"
+                  >
+                    ⚡ Seed Sample Dissection
+                  </button>
+                  <button onClick={handleNewArticle} className="px-3 py-1.5 bg-[#cb4035] text-white font-mono text-xs font-bold uppercase">
+                    + New Dissection
+                  </button>
+                </div>
               </div>
 
               {loadingArticles ? (
@@ -861,8 +903,23 @@ export default function AdminPage() {
           </div>
 
           {/* Papers Data Table */}
-          <div className="border-2 border-[#1b1a19] bg-white overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm font-mono text-xs">
+          <div className="space-y-2">
+            <div className="flex justify-between items-center flex-wrap gap-2 font-mono text-xs">
+              <span className="font-bold text-[#1b1a19] uppercase">
+                Active Formal Papers in Firestore ({papersList.length})
+              </span>
+              <button
+                type="button"
+                onClick={handleSeedPapers}
+                disabled={isSubmitting}
+                className="px-3 py-1.5 border border-[#1b1a19] bg-white hover:bg-[#f4f1ea] font-mono text-xs font-bold uppercase"
+              >
+                ⚡ Seed 3 Sample Papers to Firestore
+              </button>
+            </div>
+
+            <div className="border-2 border-[#1b1a19] bg-white overflow-x-auto">
+              <table className="w-full text-left border-collapse text-sm font-mono text-xs">
               <thead>
                 <tr className="bg-[#1b1a19] text-[#f4f1ea] uppercase">
                   <th className="p-3">Title</th>
@@ -895,7 +952,8 @@ export default function AdminPage() {
             </table>
           </div>
         </div>
-      )}
-    </div>
-  );
+      </div>
+    )}
+  </div>
+);
 }

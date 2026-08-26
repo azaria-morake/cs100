@@ -73,8 +73,13 @@ export default function PapersPage() {
         </div>
 
         {/* Papers List */}
-        <div className="space-y-8 mt-6">
-          {filteredPapers.map((paper) => (
+        {filteredPapers.length === 0 ? (
+          <div className="p-12 border-2 border-dashed border-[#1b1a19]/40 text-center font-mono text-xs text-[#6f6b64] my-8">
+            &gt; NO FORMAL PAPERS RECORDED IN THIS ARCHIVE.
+          </div>
+        ) : (
+          <div className="space-y-8 mt-6">
+            {filteredPapers.map((paper) => (
             <article key={paper.id} id={paper.id} className="p-6 border-2 border-[#1b1a19] bg-white/70 shadow-[4px_4px_0px_rgba(27,26,25,0.1)]">
               <div className="flex justify-between items-center flex-wrap gap-2 mb-3">
                 <span className="font-mono text-xs font-bold text-[#cb4035] uppercase">
@@ -148,6 +153,7 @@ export default function PapersPage() {
             </article>
           ))}
         </div>
+        )}
       </main>
       <Sidebar />
     </div>
